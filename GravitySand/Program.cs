@@ -5,7 +5,6 @@ const char player = 'V';
 const char sand = 'X';
 
 object locker = new();
-object queLocker = new();
 bool isRunning = true;
 bool drop = false;
 
@@ -89,7 +88,7 @@ void PrintField()
     Console.Clear();
     AllocatePlayerBar();
     StringBuilder sb = new();
-    
+
     for (int i = 0; i < 2; i++)
     {
         for (int j = 0; j < consoleWindowWidth; j++)
@@ -99,7 +98,7 @@ void PrintField()
 
         sb.AppendLine();
     }
-    
+
     for (int i = 0; i < consoleWindowHeight; i++)
     {
         for (int j = 0; j < consoleWindowWidth; j++)
