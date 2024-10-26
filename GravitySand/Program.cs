@@ -146,12 +146,13 @@ inputThread.Start();
 AllocateField();
 while (isRunning)
 {
-    Thread.Sleep(20);
+    Thread.Sleep(10);
     if (drop)
     {
         DropSand();
         continue;
     }
+
     PrintField();
 }
 
