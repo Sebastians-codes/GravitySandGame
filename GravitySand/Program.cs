@@ -9,7 +9,7 @@ bool isRunning = true;
 bool drop = false;
 
 int consoleWindowWidth = Console.WindowWidth;
-int consoleWindowHeight = (int)Math.Round(Console.WindowHeight * 0.90);
+int consoleWindowHeight = (int)Math.Round( Console.WindowHeight * 0.90 );
 int playerLocation = consoleWindowWidth / 2;
 
 char[,] field = new char[consoleWindowHeight, consoleWindowWidth];
@@ -21,39 +21,38 @@ void DropSand()
     int sandX = playerLocation;
     field[start, sandX] = sand;
 
-    while (true)
+    while ( true )
     {
         start++;
-        if (field[start, sandX] == sand)
+        if ( field[start, sandX] == sand )
         {
-            int randomX = Random.Shared.Next(0, 11);
-            switch (randomX)
+            int randomX = Random.Shared.Next( 0, 2 );
+            switch ( randomX )
             {
-                case < 6 when sandX < consoleWindowWidth - 1 && field[start, sandX + 1] != sand:
+                case < 1 when sandX < consoleWindowWidth - 1 && field[start, sandX + 1] != sand:
                     field[start - 1, sandX] = ' ';
                     ++sandX;
                     break;
-                case < 6 when sandX > 0 && field[start, sandX - 1] != sand:
+                case < 1 when sandX > 0 && field[start, sandX - 1] != sand:
                     field[start - 1, sandX] = ' ';
                     --sandX;
                     break;
-                case < 11 when sandX > 0 && field[start, sandX - 1] != sand:
+                case < 2 when sandX > 0 && field[start, sandX - 1] != sand:
                     field[start - 1, sandX] = ' ';
                     --sandX;
                     break;
-                case < 11 when sandX < consoleWindowWidth - 1 && field[start, sandX + 1] != sand:
+                case < 2 when sandX < consoleWindowWidth - 1 && field[start, sandX + 1] != sand:
                     field[start - 1, sandX] = ' ';
                     ++sandX;
                     break;
             }
         }
 
-        if (field[start, sandX] != sand && start < consoleWindowHeight - 1)
+        if ( field[start, sandX] != sand && start < consoleWindowHeight - 1 )
         {
             field[start - 1, sandX] = ' ';
             field[start, sandX] = sand;
             PrintField();
-            Thread.Sleep(1);
             continue;
         }
 
@@ -63,9 +62,9 @@ void DropSand()
 
 void AllocateField()
 {
-    for (int i = 0; i < consoleWindowHeight; i++)
+    for ( int i = 0; i < consoleWindowHeight; i++ )
     {
-        for (int j = 0; j < consoleWindowWidth; j++)
+        for ( int j = 0; j < consoleWindowWidth; j++ )
         {
             field[i, j] = ' ';
         }
@@ -74,52 +73,55 @@ void AllocateField()
 
 void AllocatePlayerBar()
 {
-    for (int i = 0; i < consoleWindowWidth; i++)
+    for ( int i = 0; i < consoleWindowWidth; i++ )
     {
         playerBar[0, i] = playerLine;
         playerBar[1, i] = ' ';
     }
-
-    playerBar[1, playerLocation] = player;
 }
 
 void PrintField()
 {
-    Console.Clear();
-    AllocatePlayerBar();
     StringBuilder sb = new();
 
-    for (int i = 0; i < 2; i++)
+    for ( int i = 0; i < 2; i++ )
     {
-        for (int j = 0; j < consoleWindowWidth; j++)
+        for ( int j = 0; j < consoleWindowWidth; j++ )
         {
-            sb.Append(playerBar[i, j]);
+            if ( j == playerLocation && i == 1)
+            {
+                sb.Append( player );
+                continue;
+            }
+            sb.Append( playerBar[i, j] );
         }
 
         sb.AppendLine();
     }
 
-    for (int i = 0; i < consoleWindowHeight; i++)
+    for ( int i = 0; i < consoleWindowHeight; i++ )
     {
-        for (int j = 0; j < consoleWindowWidth; j++)
+        for ( int j = 0; j < consoleWindowWidth; j++ )
         {
-            sb.Append(field[i, j]);
+            sb.Append( field[i, j] );
         }
 
         sb.AppendLine();
     }
 
-    Console.WriteLine(sb.ToString());
+    Thread.Sleep( 1 );
+    Console.SetCursorPosition(0, 0);
+    Console.Write(sb.ToString());
 }
 
 void HandleMovement()
 {
-    while (isRunning)
+    while ( isRunning )
     {
-        char key = Console.ReadKey(true).KeyChar;
-        lock (locker)
+        char key = Console.ReadKey( true ).KeyChar;
+        lock ( locker )
         {
-            switch (key)
+            switch ( key )
             {
                 case 'l' when playerLocation < consoleWindowWidth - 1:
                     playerLocation++;
@@ -136,18 +138,20 @@ void HandleMovement()
             }
         }
 
-        Thread.Sleep(10);
+        Thread.Sleep( 10 );
     }
 }
 
 Thread inputThread = new(HandleMovement);
 inputThread.Start();
 
+Console.CursorVisible = false;
+AllocatePlayerBar();
 AllocateField();
-while (isRunning)
+while ( isRunning )
 {
-    Thread.Sleep(10);
-    if (drop)
+    Thread.Sleep( 10 );
+    if ( drop )
     {
         DropSand();
         continue;
